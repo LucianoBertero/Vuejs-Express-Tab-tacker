@@ -13,6 +13,7 @@ import { default } from '../App.vue';
       placeholder="Password"
     />
     <br />
+    <div class="error" v-html="error"></div>
     <button @click="register">Register</button>
   </div>
 </template>
@@ -24,6 +25,7 @@ export default {
     return {
       email: "",
       password: "",
+      error: null,
     };
   },
   watch: {
@@ -33,14 +35,22 @@ export default {
   },
   methods: {
     async register() {
-      await AuthenticationService.register({
-        email: this.email,
-        password: this.password,
-      });
+      try {
+        await AuthenticationService.register({
+          email: this.email,
+          password: this.password,
+        });
+      } catch (error) {
+        this.error = error.response.data.error;
+      }
     },
   },
-  mounted() {},
+  mounted(err) {},
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.error {
+  color: red;
+}
+</style>
